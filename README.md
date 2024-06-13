@@ -1,6 +1,6 @@
 # datepickertest
 
-This datepicker for vue
+This todo project was maked for test
 
 ## Project Setup
 
