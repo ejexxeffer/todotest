@@ -1,0 +1,21 @@
+{
+  // "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/components/*/*Types.ts"],
+  "compilerOptions": {
+    "outDir": "./dist/types",
+    "declaration": true,
+    "lib": ["esnext"],
+    "strict": true,
+    "noImplicitAny": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+
+  "references": [
+    {
+      "path": "./tsconfig.vite.json"
+    }
+  ]
+}
