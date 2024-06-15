@@ -16,6 +16,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'newtodo', value: TodoObj): void
+  (e: 'cancel'): void
 }>()
 
 const titleText = ref<string>('')
@@ -57,12 +58,18 @@ const addTodo = () => {
     descriptionText.value = ''
   }
 }
+const cancelTodo = () => {
+  emit("cancel")
+    titleText.value = ''
+    descriptionText.value = ''
+}
 </script>
 
 <template>
   <div>
-    <input autofocus :placeholder="placeholder+' title'" v-model="titleText" @keyup.enter="addTodo">
+    <input :placeholder="placeholder+' title'" v-model="titleText" @keyup.enter="addTodo">
     <input autofocus :placeholder="placeholder+' description'" v-model="descriptionText" @keyup.enter="addTodo">
+    <button @click.prevent="cancelTodo">cancel</button>
     <button @click.prevent="addTodo" :disabled="!descriptionText">save</button>
   </div>
 </template>

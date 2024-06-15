@@ -59,8 +59,9 @@ const addTodo = (e:KeyboardEvent) => {
       <input type="radio" >
       <p>{{ todo.title }}</p>
       <p>{{ todo.description }}</p>
-      <button @click.prevent="() =>{editTodo = !editTodo}"><span>edit</span></button>
+      <button v-show="!editTodo" @click.prevent="() =>{editTodo = !editTodo}"><span>edit</span></button>
       <TodoEdit v-show="editTodo" @newtodo="() => {editTodo = !editTodo
+      }" @cancel="() => {editTodo = !editTodo
       }"/>
     </li>
   </ul>
