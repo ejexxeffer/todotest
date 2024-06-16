@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import TodoEdit from '@/components/TodoEdit/TodoEdit.vue';
+import { ref } from 'vue'
+// import TodoEdit from '@/components/TodoEdit/TodoEdit.vue'
+import TodoInput from '@/components/TodoInput/TodoInput.vue'
 
 // import type {  } from './TodoInputTypes'
 // import { onMounted, ref, watch } from 'vue'
 const props = withDefaults(
   defineProps<{
-    todos: TodoObj[],
-    disable?: boolean,
+    todos: TodoObj[]
+    disable?: boolean
   }>(),
   {
-    disable:false,
+    disable: false
   }
 )
 const emit = defineEmits<{
@@ -38,7 +39,7 @@ const editTodo = ref<boolean>(false)
 //   }
 // )
 
-const addTodo = (e:KeyboardEvent) => {
+const addTodo = (e: KeyboardEvent) => {
   const value = (e.target as HTMLInputElement).value.trim()
   // if (value) {
   //   (e.target as HTMLInputElement).value = ''
@@ -56,13 +57,33 @@ const addTodo = (e:KeyboardEvent) => {
 <template>
   <ul>
     <li v-for="todo in todos" :key="todo.id">
-      <input type="radio" >
+      <TodoInput :todo="todo" />
+      <!-- <input type="radio" />
       <p>{{ todo.title }}</p>
       <p>{{ todo.description }}</p>
-      <button v-show="!editTodo" @click.prevent="() =>{editTodo = !editTodo}"><span>edit</span></button>
-      <TodoEdit v-show="editTodo" @newtodo="() => {editTodo = !editTodo
-      }" @cancel="() => {editTodo = !editTodo
-      }"/>
+      <button
+        v-show="!editTodo"
+        @click.prevent="
+          () => {
+            editTodo = !editTodo
+          }
+        "
+      >
+        <span>edit</span>
+      </button>
+      <TodoEdit
+        v-show="editTodo"
+        @newtodo="
+          () => {
+            editTodo = !editTodo
+          }
+        "
+        @cancel="
+          () => {
+            editTodo = !editTodo
+          }
+        "
+      /> -->
     </li>
   </ul>
 </template>

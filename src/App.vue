@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
-import TodoEdit from '@/components/TodoEdit/TodoEdit.vue';
-import TodoItems from '@/components/TodoItems/TodoItems.vue';
+import TodoEdit from '@/components/TodoEdit/TodoEdit.vue'
+import TodoItems from '@/components/TodoItems/TodoItems.vue'
 const day = ref<number>(0)
 const start = ref<boolean>(false)
 const setStart = () => {
@@ -99,44 +99,46 @@ watchEffect(() => {
 
 <template>
   <section class="todoapp">
-      <h1>Todos</h1>
-      <!-- <input
-        class="new-todo"
-        autofocus
-        placeholder="What needs to be done?"
-        @keyup.enter="addTodo"
-      > -->
-      <button v-show="!editTodo" @click.prevent="()=>{editTodo = !editTodo}"><div><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-</svg>
-</div><span>Add task</span></button>
-      <form v-show="editTodo"><TodoEdit :placeholder="'Write here'" @newtodo="todoAdd" @cancel="() => {editTodo = !editTodo}"/></form>
-    <section class="main" v-show="todos.length">
-      <TodoItems :todos="todos"/>
-      <!-- <ul class="todo-list">
-        <li
-          v-for="todo in filteredTodos"
-          class="todo"
-          :key="todo.id"
-          :class="{ completed: todo.completed, editing: todo === editedTodo }"
+    <h1>Todos</h1>
+    <button
+      v-show="!editTodo"
+      @click.prevent="
+        () => {
+          editTodo = !editTodo
+        }
+      "
+    >
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
         >
-          <div class="view">
-            <input class="toggle" type="checkbox" v-model="todo.completed">
-            <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-            <button class="destroy" @click="removeTodo(todo)"></button>
-          </div>
-          <input
-            v-if="todo === editedTodo"
-            class="edit"
-            type="text"
-            v-model="todo.title"
-            @vue:mounted="({ el }) => el.focus()"
-            @blur="doneEdit(todo)"
-            @keyup.enter="doneEdit(todo)"
-            @keyup.escape="cancelEdit(todo)"
-          >
-        </li>
-      </ul> -->
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+      </div>
+      <span>Add task</span>
+    </button>
+    <form v-show="editTodo">
+      <TodoEdit
+        :placeholder="'Write here'"
+        @newtodo="todoAdd"
+        @cancel="
+          () => {
+            editTodo = !editTodo
+          }
+        "
+      />
+    </form>
+    <section class="main" v-show="todos.length">
+      <TodoItems :todos="todos" />
     </section>
     <!-- <footer class="footer" v-show="todos.length">
       <span class="todo-count">
@@ -160,7 +162,6 @@ watchEffect(() => {
     </footer> -->
   </section>
 </template>
-
 
 <style scoped>
 header {

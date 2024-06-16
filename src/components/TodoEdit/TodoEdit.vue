@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 // import type {  } from './TodoInputTypes'
 // import { onMounted, ref, watch } from 'vue'
 const props = withDefaults(
   defineProps<{
-    placeholder?: string,
-    disable?: boolean,
+    placeholder?: string
+    disable?: boolean
   }>(),
   {
     placeholder: 'Write new todo here',
-    disable:false,
+    disable: false,
     lang: 'en'
   }
 )
@@ -21,7 +21,6 @@ const emit = defineEmits<{
 
 const titleText = ref<string>('')
 const descriptionText = ref<string>('')
-
 
 // onMounted(() => {
 //   savedDate.value = props.date
@@ -46,29 +45,38 @@ const descriptionText = ref<string>('')
 
 const addTodo = () => {
   if (descriptionText.value) {
-    emit("newtodo", {
+    emit('newtodo', {
       id: Date.now(),
       title: titleText.value || undefined,
       description: descriptionText.value,
       completed: false,
       deadline: null,
-      priority: null,
+      priority: null
     })
     titleText.value = ''
     descriptionText.value = ''
   }
 }
 const cancelTodo = () => {
-  emit("cancel")
-    titleText.value = ''
-    descriptionText.value = ''
+  emit('cancel')
+  titleText.value = ''
+  descriptionText.value = ''
 }
 </script>
 
 <template>
   <div>
-    <input :placeholder="placeholder+' title'" v-model="titleText" @keyup.enter="addTodo">
-    <input autofocus :placeholder="placeholder+' description'" v-model="descriptionText" @keyup.enter="addTodo">
+    <input
+      :placeholder="placeholder + ' title'"
+      v-model="titleText"
+      @keyup.enter="addTodo"
+    />
+    <input
+      autofocus
+      :placeholder="placeholder + ' description'"
+      v-model="descriptionText"
+      @keyup.enter="addTodo"
+    />
     <button @click.prevent="cancelTodo">cancel</button>
     <button @click.prevent="addTodo" :disabled="!descriptionText">save</button>
   </div>
