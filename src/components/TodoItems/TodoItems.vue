@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-// import TodoEdit from '@/components/TodoEdit/TodoEdit.vue'
-import TodoInput from '@/components/TodoInput/TodoInput.vue'
-
-// import type {  } from './TodoInputTypes'
-// import { onMounted, ref, watch } from 'vue'
+// import { ref } from 'vue'
+import type { Priority, TodoObj } from './TodoItemsTypes'
+import TodoElement from '@/components/TodoElement/TodoElement.vue'
 const props = withDefaults(
   defineProps<{
     todos: TodoObj[]
+    priorities: Priority[]
     disable?: boolean
   }>(),
   {
@@ -15,9 +13,10 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'newtodo', value: TodoObj): void
+  (e: 'edit-todo', value: TodoObj): void
+  (e: 'delete-todo', value: TodoObj): void
+  (e: 'complete-todo', value: TodoObj): void
 }>()
-const editTodo = ref<boolean>(false)
 // onMounted(() => {
 //   savedDate.value = props.date
 //   day.value = props.date.getDate()
@@ -38,52 +37,29 @@ const editTodo = ref<boolean>(false)
 //     )
 //   }
 // )
-
-const addTodo = (e: KeyboardEvent) => {
-  const value = (e.target as HTMLInputElement).value.trim()
-  // if (value) {
-  //   (e.target as HTMLInputElement).value = ''
-  //   emit("newtodo", {
-  //     id: Date.now(),
-  //     title: value,
-  //     completed: false,
-  //     deadline: null,
-  //     priority: null,
-  //   })
-  // }
-}
 </script>
-
 <template>
   <ul>
     <li v-for="todo in todos" :key="todo.id">
-      <TodoInput :todo="todo" />
-      <!-- <input type="radio" />
-      <p>{{ todo.title }}</p>
-      <p>{{ todo.description }}</p>
-      <button
-        v-show="!editTodo"
-        @click.prevent="
-          () => {
-            editTodo = !editTodo
+      <TodoElement
+        :priorities="priorities"
+        :todoValue="todo"
+        @edit-todo="
+          (value: TodoObj) => {
+            emit('edit-todo', value)
           }
         "
-      >
-        <span>edit</span>
-      </button>
-      <TodoEdit
-        v-show="editTodo"
-        @newtodo="
-          () => {
-            editTodo = !editTodo
+        @complete-todo="
+          (value: TodoObj) => {
+            emit('complete-todo', value)
           }
         "
-        @cancel="
-          () => {
-            editTodo = !editTodo
+        @delete-todo="
+          (value: TodoObj) => {
+            emit('delete-todo', value)
           }
         "
-      /> -->
+      />
     </li>
   </ul>
 </template>

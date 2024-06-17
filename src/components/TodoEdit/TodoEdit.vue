@@ -1,57 +1,77 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-// import type {  } from './TodoInputTypes'
-// import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import type { Priority, PriorityT, TodoObj } from './TodoEditTypes'
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOptions,
+  ListboxOption
+} from '@headlessui/vue'
 const props = withDefaults(
   defineProps<{
+    priorities: Priority[]
+    todoValue?: TodoObj | null
     placeholder?: string
     disable?: boolean
   }>(),
   {
+    todoVlaue: null,
     placeholder: 'Write new todo here',
     disable: false,
     lang: 'en'
   }
 )
 const emit = defineEmits<{
-  (e: 'newtodo', value: TodoObj): void
+  (e: 'new-todo', value: TodoObj): void
   (e: 'cancel'): void
 }>()
 
 const titleText = ref<string>('')
 const descriptionText = ref<string>('')
-
-// onMounted(() => {
-//   savedDate.value = props.date
-//   day.value = props.date.getDate()
-//   month.value = props.date.getMonth()
-//   year.value = props.date.getFullYear()
-//   savedLang.value = props.lang
-// })
-// watch(
-//   () => props.isoWeek,
-//   () => {
-//     emptySlots.value = calcEmptySlots(
-//       daysInMonth(year.value, month.value),
-//       year.value,
-//       month.value,
-//       props.isoWeek,
-//       props.before,
-//       props.after
-//     )
-//   }
-// )
+const priority = ref<PriorityT>('none')
+onMounted(() => {
+  titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
+  descriptionText.value = props.todoValue?.description
+    ? props.todoValue?.description
+    : ''
+})
+watch(
+  () => props.todoValue,
+  () => {
+    titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
+    descriptionText.value = props.todoValue?.description
+      ? props.todoValue?.description
+      : ''
+  }
+)
 
 const addTodo = () => {
-  if (descriptionText.value) {
-    emit('newtodo', {
+  if ((descriptionText.value || titleText.value) && !props.todoValue) {
+    emit('new-todo', {
       id: Date.now(),
       title: titleText.value || undefined,
-      description: descriptionText.value,
+      description: descriptionText.value || undefined,
       completed: false,
       deadline: null,
-      priority: null
+      priority: 'none'
+    })
+    titleText.value = ''
+    descriptionText.value = ''
+  }
+  if (
+    descriptionText.value !== props.todoValue?.description ||
+    titleText.value !== props.todoValue?.title ||
+    (priority.value !== props.todoValue?.priority &&
+      props.todoValue &&
+      props.todoValue.id)
+  ) {
+    emit('new-todo', {
+      id: props.todoValue?.id || Date.now(),
+      title: titleText.value || undefined,
+      description: descriptionText.value || undefined,
+      completed: false,
+      deadline: null,
+      priority: 'none'
     })
     titleText.value = ''
     descriptionText.value = ''
@@ -59,8 +79,10 @@ const addTodo = () => {
 }
 const cancelTodo = () => {
   emit('cancel')
-  titleText.value = ''
-  descriptionText.value = ''
+  titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
+  descriptionText.value = props.todoValue?.description
+    ? props.todoValue?.description
+    : ''
 }
 </script>
 
@@ -69,15 +91,31 @@ const cancelTodo = () => {
     <input
       :placeholder="placeholder + ' title'"
       v-model="titleText"
-      @keyup.enter="addTodo"
+      @keydown.enter="addTodo"
     />
     <input
       autofocus
       :placeholder="placeholder + ' description'"
       v-model="descriptionText"
-      @keyup.enter="addTodo"
+      @keydown.enter="addTodo"
     />
+    <Listbox v-if="priorities[0].value" v-model="priority">
+      <ListboxButton>
+        {{ todoValue && !priority ? todoValue?.priority : priority }}
+      </ListboxButton>
+      <ListboxOptions>
+        <ListboxOption
+          v-for="priority in priorities"
+          :key="priority.id"
+          :value="priority.value"
+        >
+          {{ priority.value }}
+        </ListboxOption>
+      </ListboxOptions>
+    </Listbox>
     <button @click.prevent="cancelTodo">cancel</button>
-    <button @click.prevent="addTodo" :disabled="!descriptionText">save</button>
+    <button @click.prevent="addTodo" :disabled="!descriptionText && !titleText">
+      save
+    </button>
   </div>
 </template>

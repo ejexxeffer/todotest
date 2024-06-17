@@ -2,6 +2,9 @@
 import { ref, watchEffect } from 'vue'
 import TodoEdit from '@/components/TodoEdit/TodoEdit.vue'
 import TodoItems from '@/components/TodoItems/TodoItems.vue'
+import type { TodoObj } from '@/components/TodoEdit/TodoEditTypes'
+import { editInArr } from '@/utils/editInArr'
+import type { Priority } from '@/utils/UtilTypes'
 const day = ref<number>(0)
 const start = ref<boolean>(false)
 const setStart = () => {
@@ -12,6 +15,7 @@ const setStart = () => {
 //   lang.value = lang.value === 'en' ? 'ru' : 'en'
 // }
 const STORAGE_KEY = 'todo_test'
+const PRIOR_KEY = 'priorities'
 
 // const filters = {
 //   all: (todos) => todos,
@@ -20,13 +24,17 @@ const STORAGE_KEY = 'todo_test'
 // }
 
 // state
-const todos = ref(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'))
+const todos = ref<TodoObj[]>(
+  JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') as TodoObj[]
+)
+const priorities = ref<Priority[]>(
+  JSON.parse(localStorage.getItem(PRIOR_KEY) || '[]') as Priority[]
+)
 const editTodo = ref<boolean>(false)
 // // derived state
 const todoAdd = (value: TodoObj) => {
   todos.value.push(value)
   editTodo.value = !editTodo.value
-  console.log(value)
 }
 // this is old declaration now i can use this functionality
 // with watch and ref
@@ -42,7 +50,6 @@ const todoAdd = (value: TodoObj) => {
 watchEffect(() => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos.value))
 })
-
 // function toggleAll(e) {
 //   todos.value.forEach((todo) => (todo.completed = e.target.checked))
 // }
@@ -95,6 +102,13 @@ watchEffect(() => {
 //     visibility.value = 'all'
 //   }
 // }
+// const editInArr = (value: TodoObj, values: TodoObj[]) => {
+//   return values[values.indexOf(value)] = {...value}
+// }
+const completeInArr = (value: TodoObj) => {
+  value.completed = !value.completed
+  todos.value[todos.value.indexOf(value)] = { ...value }
+}
 </script>
 
 <template>
@@ -129,7 +143,8 @@ watchEffect(() => {
     <form v-show="editTodo">
       <TodoEdit
         :placeholder="'Write here'"
-        @newtodo="todoAdd"
+        :priorities="priorities"
+        @new-todo="todoAdd"
         @cancel="
           () => {
             editTodo = !editTodo
@@ -138,28 +153,26 @@ watchEffect(() => {
       />
     </form>
     <section class="main" v-show="todos.length">
-      <TodoItems :todos="todos" />
+      <TodoItems
+        :priorities="priorities"
+        :todos="todos"
+        @edit-todo="
+          (value) => {
+            todos = editInArr(value, todos)
+          }
+        "
+        @complete-todo="
+          (value) => {
+            todos = editInArr({ ...value, completed: !value.completed }, todos)
+          }
+        "
+        @delete-todo="
+          (value) => {
+            todos.splice(todos.indexOf(value), 1)
+          }
+        "
+      />
     </section>
-    <!-- <footer class="footer" v-show="todos.length">
-      <span class="todo-count">
-        <strong>{{ remaining }}</strong>
-        <span>{{ remaining === 1 ? ' item' : ' items' }} left</span>
-      </span>
-      <ul class="filters">
-        <li>
-          <a href="#/all" :class="{ selected: visibility === 'all' }">All</a>
-        </li>
-        <li>
-          <a href="#/active" :class="{ selected: visibility === 'active' }">Active</a>
-        </li>
-        <li>
-          <a href="#/completed" :class="{ selected: visibility === 'completed' }">Completed</a>
-        </li>
-      </ul>
-      <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
-        Clear completed
-      </button>
-    </footer> -->
   </section>
 </template>
 
