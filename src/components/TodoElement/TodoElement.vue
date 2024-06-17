@@ -104,15 +104,16 @@ watch(
 .button {
   display: flex;
   flex-wrap: wrap;
+  background-color: rgb(206, 206, 206);
   justify-content: space-between;
   justify-self: end;
-  border-radius: 5px;
+  border-radius: 6px;
   box-sizing: border-box;
   padding: 6px 15px;
   border-style: none;
   gap: 10px;
   align-items: center;
-  > .add-task_svg {
+  > .button_svg {
     margin: -4px;
     display: flex;
     min-width: 20px;
@@ -130,20 +131,21 @@ watch(
   align-items: center;
 }
 .todo-priority {
-  min-width: 90%;
+  min-width: 70%;
   min-height: 10%;
+  border-radius: 6px;
   position: inherit;
 }
 .priority-high {
-  background-color: red;
+  background-color: rgb(248, 28, 28);
 }
 
 .priority-medium {
-  background-color: orange;
+  background-color: rgb(255, 185, 54);
 }
 
 .priority-low {
-  background-color: green;
+  background-color: rgb(43, 247, 43);
 }
 
 .priority-none {

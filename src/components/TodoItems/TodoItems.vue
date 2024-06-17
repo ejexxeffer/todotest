@@ -71,6 +71,9 @@ header {
   width: 100%;
   display: flex;
   flex-direction: row;
+  background-color: #fcfcfc;
+  border-radius: 7px;
+  padding: 10px;
 }
 .logo {
   display: block;
@@ -79,6 +82,7 @@ header {
 .main {
   display: flex;
   width: 100%;
+  gap: 10px;
   list-style-type: none;
   margin: 0;
   padding: 0;

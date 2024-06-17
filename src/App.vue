@@ -36,78 +36,18 @@ const todoAdd = (value: TodoObj) => {
   todos.value.push(value)
   editTodo.value = !editTodo.value
 }
+
 // this is old declaration now i can use this functionality
 // with watch and ref
 
 // const filteredTodos = computed(() => filters[visibility.value](todos.value))
 // const remaining = computed(() => filters.active(todos.value).length)
 
-// // handle routing
-// window.addEventListener('hashchange', onHashChange)
-// onHashChange()
-
-// // persist state
 watchEffect(() => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos.value))
 })
 // function toggleAll(e) {
 //   todos.value.forEach((todo) => (todo.completed = e.target.checked))
-// }
-
-// function addTodo(e) {
-//   const value = e.target.value.trim()
-//   if (value) {
-//     todos.value.push({
-//       id: Date.now(),
-//       title: value,
-//       completed: false
-//     })
-//     e.target.value = ''
-//   }
-// }
-
-// function removeTodo(todo) {
-//   todos.value.splice(todos.value.indexOf(todo), 1)
-// }
-
-// let beforeEditCache = ''
-// function editTodo(todo) {
-//   beforeEditCache = todo.title
-//   editedTodo.value = todo
-// }
-
-// function cancelEdit(todo) {
-//   editedTodo.value = null
-//   todo.title = beforeEditCache
-// }
-
-// function doneEdit(todo) {
-//   if (editedTodo.value) {
-//     editedTodo.value = null
-//     todo.title = todo.title.trim()
-//     if (!todo.title) removeTodo(todo)
-//   }
-// }
-
-// function removeCompleted() {
-//   todos.value = filters.active(todos.value)
-// }
-
-// function onHashChange() {
-//   const route = window.location.hash.replace(/#\/?/, '')
-//   if (filters[route]) {
-//     visibility.value = route
-//   } else {
-//     window.location.hash = ''
-//     visibility.value = 'all'
-//   }
-// }
-// const editInArr = (value: TodoObj, values: TodoObj[]) => {
-//   return values[values.indexOf(value)] = {...value}
-// }
-// const completeInArr = (value: TodoObj) => {
-//   value.completed = !value.completed
-//   todos.value[todos.value.indexOf(value)] = { ...value }
 // }
 </script>
 
@@ -115,7 +55,7 @@ watchEffect(() => {
   <section class="todoapp">
     <h1>Todos</h1>
     <button
-      class="add-task"
+      class="button"
       v-show="!editTodo"
       @click.prevent="
         () => {
@@ -123,7 +63,7 @@ watchEffect(() => {
         }
       "
     >
-      <div class="add-task_svg">
+      <div class="button_svg">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -186,11 +126,15 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* > h1 {
-    display: flex;
-    align-items: center;
-  } */
+  gap: 10px;
+  > h1 {
+    color: rgb(36, 36, 36);
+  }
 }
+/* .form {
+  display: flex;
+  flex-direction: row;
+} */
 .logo {
   display: block;
   margin: 0 auto 2rem;
@@ -201,21 +145,31 @@ header {
   align-items: center;
   min-width: 90%;
 }
-.add-task {
+.button {
   display: flex;
+  font-size: medium;
   flex-wrap: wrap;
+  background-color: rgb(69, 150, 241);
+  color: rgb(253, 252, 246);
   justify-content: space-between;
-  border-radius: 5px;
+  border-radius: 8px;
   box-sizing: border-box;
-  padding: 6px 15px;
+  padding: 12px 20px 10px;
   border-style: none;
   gap: 10px;
-  align-items: center;
-  > .add-task_svg {
-    margin: -4px;
+  align-items: start;
+  > .button_svg {
+    margin-left: -4px;
+    /* margin-top: -3px; */
+    /* align-self: baseline; */
+    line-height: 1;
     display: flex;
     min-width: 20px;
     min-height: 20px;
+  }
+  > span {
+    line-height: 1.5;
+    font-size: medium;
   }
 }
 /* @media (min-width: 1024px) {
