@@ -105,10 +105,10 @@ watchEffect(() => {
 // const editInArr = (value: TodoObj, values: TodoObj[]) => {
 //   return values[values.indexOf(value)] = {...value}
 // }
-const completeInArr = (value: TodoObj) => {
-  value.completed = !value.completed
-  todos.value[todos.value.indexOf(value)] = { ...value }
-}
+// const completeInArr = (value: TodoObj) => {
+//   value.completed = !value.completed
+//   todos.value[todos.value.indexOf(value)] = { ...value }
+// }
 </script>
 
 <template>

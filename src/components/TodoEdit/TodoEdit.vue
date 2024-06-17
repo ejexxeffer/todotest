@@ -34,6 +34,7 @@ onMounted(() => {
   descriptionText.value = props.todoValue?.description
     ? props.todoValue?.description
     : ''
+  priority.value = props.todoValue?.priority ? props.todoValue.priority : 'none'
 })
 watch(
   () => props.todoValue,
@@ -42,29 +43,15 @@ watch(
     descriptionText.value = props.todoValue?.description
       ? props.todoValue?.description
       : ''
+    priority.value = props.todoValue?.priority
+      ? props.todoValue.priority
+      : 'none'
   }
 )
 
 const addTodo = () => {
-  if ((descriptionText.value || titleText.value) && !props.todoValue) {
-    emit('new-todo', {
-      id: Date.now(),
-      title: titleText.value || undefined,
-      description: descriptionText.value || undefined,
-      completed: false,
-      deadline: null,
-      priority: 'none'
-    })
-    titleText.value = ''
-    descriptionText.value = ''
-  }
-  if (
-    descriptionText.value !== props.todoValue?.description ||
-    titleText.value !== props.todoValue?.title ||
-    (priority.value !== props.todoValue?.priority &&
-      props.todoValue &&
-      props.todoValue.id)
-  ) {
+  if (descriptionText.value || titleText.value) {
+    console.log('fired one addTodo')
     emit('new-todo', {
       id: props.todoValue?.id || Date.now(),
       title: titleText.value || undefined,
@@ -76,6 +63,23 @@ const addTodo = () => {
     titleText.value = ''
     descriptionText.value = ''
   }
+  // if (
+  //   descriptionText.value !== props.todoValue?.description ||
+  //   titleText.value !== props.todoValue?.title ||
+  //   (priority.value !== props.todoValue?.priority && props.todoValue.id)
+  // ) {
+  //   console.log('fired TWO addTodo')
+  //   emit('new-todo', {
+  //     id: props.todoValue?.id || Date.now(),
+  //     title: titleText.value || undefined,
+  //     description: descriptionText.value || undefined,
+  //     completed: false,
+  //     deadline: null,
+  //     priority: priority.value
+  //   })
+  //   titleText.value = ''
+  //   descriptionText.value = ''
+  // }
 }
 const cancelTodo = () => {
   emit('cancel')
