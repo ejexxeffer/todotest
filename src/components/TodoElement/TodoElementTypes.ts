@@ -1,5 +1,9 @@
-export type PriorityT = 'none' | 'hight' | 'medium' | 'low'
-
+export type PriorityT = 'none' | 'high' | 'medium' | 'low'
+export type PriorityClassT =
+  | 'no-priority'
+  | 'high-priority'
+  | 'medium-priority'
+  | 'low-priority'
 export interface TodoObj {
   id: number
   title: string | undefined

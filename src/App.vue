@@ -115,6 +115,7 @@ const completeInArr = (value: TodoObj) => {
   <section class="todoapp">
     <h1>Todos</h1>
     <button
+      class="add-task"
       v-show="!editTodo"
       @click.prevent="
         () => {
@@ -122,7 +123,7 @@ const completeInArr = (value: TodoObj) => {
         }
       "
     >
-      <div>
+      <div class="add-task_svg">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -180,13 +181,44 @@ const completeInArr = (value: TodoObj) => {
 header {
   line-height: 1.5;
 }
-
+.todoapp {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* > h1 {
+    display: flex;
+    align-items: center;
+  } */
+}
 .logo {
   display: block;
   margin: 0 auto 2rem;
 }
-
-@media (min-width: 1024px) {
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90%;
+}
+.add-task {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 6px 15px;
+  border-style: none;
+  gap: 10px;
+  align-items: center;
+  > .add-task_svg {
+    margin: -4px;
+    display: flex;
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+/* @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
@@ -202,5 +234,5 @@ header {
     place-items: flex-start;
     flex-wrap: wrap;
   }
-}
+} */
 </style>

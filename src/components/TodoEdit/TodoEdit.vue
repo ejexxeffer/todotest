@@ -71,7 +71,7 @@ const addTodo = () => {
       description: descriptionText.value || undefined,
       completed: false,
       deadline: null,
-      priority: 'none'
+      priority: priority.value
     })
     titleText.value = ''
     descriptionText.value = ''
