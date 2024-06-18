@@ -82,19 +82,21 @@ const cancelTodo = () => {
 <template>
   <div :class="edit.edit">
     <input
+      :class="edit.input"
       :placeholder="placeholder + ' title'"
       v-model="titleText"
       @keydown.enter="addTodo"
     />
     <input
       autofocus
+      :class="edit.input"
       :placeholder="placeholder + ' description'"
       v-model="descriptionText"
       @keydown.enter="addTodo"
     />
     <div>
       <Listbox v-if="priorities[0].value" v-model="priority" by="id">
-        <ListboxButton :class="edit.button">
+        <ListboxButton :class="[edit.button, edit.grey]">
           {{ todoValue && !priority ? todoValue?.priority : priority.value }}
         </ListboxButton>
         <transition
@@ -138,7 +140,7 @@ const cancelTodo = () => {
 
     <button :class="edit.button" @click.prevent="cancelTodo">cancel</button>
     <button
-      :class="edit.button"
+      :class="[edit.button, edit.danger]"
       @click.prevent="addTodo"
       :disabled="!descriptionText && !titleText"
     >
@@ -161,7 +163,6 @@ const cancelTodo = () => {
   font-size: 1rem;
   line-height: 1.5rem;
   width: 9rem;
-  /* width: 100%; */
   max-height: 80rem;
   background-color: white;
   list-style: none;
@@ -182,16 +183,8 @@ const cancelTodo = () => {
   overflow: hidden;
   padding: 0.35rem 2.5rem;
   gap: 10rem;
-  /* > span {
-    > svg {
-      position: absolute;
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-  } */
 }
 .listtext {
-  /* display: block; */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -210,19 +203,45 @@ const cancelTodo = () => {
     height: 1.5rem;
   }
 }
+.input {
+  padding: 6px 15px;
+  border-radius: 6px;
+  border-style: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  outline: rgba(0, 0, 0, 0.295) solid 1px;
+}
+
+.input:focus {
+  border-style: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  outline: rgba(0, 0, 0, 0.5) solid 2px;
+}
+.input:focus-visible {
+  border-style: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  outline: rgba(0, 0, 0, 0.5) solid 2px;
+}
 .button {
   display: flex;
   flex-wrap: wrap;
   min-width: 5rem;
   align-items: center;
-  background-color: rgb(206, 206, 206);
   justify-content: center;
   justify-self: end;
-  border-radius: 6px;
+  border-radius: 0.5rem;
   box-sizing: border-box;
-  padding: 6px 15px;
+  padding: 0.5rem 1rem;
   border-style: none;
-  gap: 10px;
+  gap: 0.9rem;
   align-items: center;
   > .button_svg {
     margin: -4px;
@@ -230,5 +249,22 @@ const cancelTodo = () => {
     min-width: 20px;
     min-height: 20px;
   }
+}
+.button:focus {
+  border-style: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  outline: rgba(0, 0, 0, 0.5) solid 2px;
+}
+.button:hover {
+  background-color: gray;
+}
+.danger {
+  background-color: rgb(238, 106, 106);
+}
+.grey {
+  background-color: rgb(206, 206, 206);
 }
 </style>
