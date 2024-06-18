@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import TodoEdit from '@/components/TodoEdit/TodoEdit.vue'
-import type {
-  Priority,
-  PriorityClassT,
-  PriorityT,
-  TodoObj
-} from './TodoElementTypes'
+import type { Priority, PriorityClassT, TodoObj } from './TodoElementTypes'
 const props = defineProps<{
   todoValue: TodoObj
   priorities: Priority[]
@@ -27,13 +22,15 @@ const priorityMap = {
 }
 onMounted(() => {
   completed.value = props.todoValue.completed
-  priorityClass.value = priorityMap[props.todoValue.priority] as PriorityClassT
+  priorityClass.value = priorityMap[
+    props.todoValue.priority.value
+  ] as PriorityClassT
 })
 watch(
   () => props.todoValue.priority,
   () => {
     priorityClass.value = priorityMap[
-      props.todoValue.priority
+      props.todoValue.priority.value
     ] as PriorityClassT
   }
 )

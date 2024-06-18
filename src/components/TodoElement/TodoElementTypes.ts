@@ -10,7 +10,7 @@ export interface TodoObj {
   description: string | undefined
   completed: boolean
   deadline: Date | null
-  priority: PriorityT
+  priority: Priority
 }
 
 export interface Priority {

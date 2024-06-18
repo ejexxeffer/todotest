@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import type { Priority, PriorityT, TodoObj } from './TodoEditTypes'
+import type { Priority, TodoObj } from './TodoEditTypes'
 import {
   Listbox,
   ListboxButton,
@@ -28,13 +28,15 @@ const emit = defineEmits<{
 
 const titleText = ref<string>('')
 const descriptionText = ref<string>('')
-const priority = ref<PriorityT>('none')
+const priority = ref<Priority>({ id: 4, value: 'none' })
 onMounted(() => {
   titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
   descriptionText.value = props.todoValue?.description
     ? props.todoValue?.description
     : ''
-  priority.value = props.todoValue?.priority ? props.todoValue.priority : 'none'
+  priority.value = props.todoValue?.priority
+    ? props.todoValue.priority
+    : { id: 4, value: 'none' }
 })
 watch(
   () => props.todoValue,
@@ -45,7 +47,7 @@ watch(
       : ''
     priority.value = props.todoValue?.priority
       ? props.todoValue.priority
-      : 'none'
+      : { id: 4, value: 'none' }
   }
 )
 
@@ -62,6 +64,7 @@ const addTodo = () => {
     })
     titleText.value = ''
     descriptionText.value = ''
+    priority.value = { id: 4, value: 'none' }
   }
 }
 const cancelTodo = () => {
@@ -70,11 +73,14 @@ const cancelTodo = () => {
   descriptionText.value = props.todoValue?.description
     ? props.todoValue?.description
     : ''
+  priority.value = props.todoValue?.priority
+    ? props.todoValue?.priority
+    : { id: 4, value: 'none' }
 }
 </script>
 
 <template>
-  <div class="edit">
+  <div :class="edit.edit">
     <input
       :placeholder="placeholder + ' title'"
       v-model="titleText"
@@ -87,25 +93,52 @@ const cancelTodo = () => {
       @keydown.enter="addTodo"
     />
     <div>
-      <Listbox v-if="priorities[0].value" v-model="priority">
-        <ListboxButton class="button">
-          {{ todoValue && !priority ? todoValue?.priority : priority }}
+      <Listbox v-if="priorities[0].value" v-model="priority" by="id">
+        <ListboxButton :class="edit.button">
+          {{ todoValue && !priority ? todoValue?.priority : priority.value }}
         </ListboxButton>
-        <ListboxOptions class="menu">
-          <ListboxOption
-            v-for="priority in priorities"
-            :key="priority.id"
-            :value="priority.value"
-          >
-            {{ priority.value }}
-          </ListboxOption>
-        </ListboxOptions>
+        <transition
+          leave-active-class="transition duration-100 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <ListboxOptions :class="edit.menu">
+            <ListboxOption
+              v-slot="{ active, selected }"
+              v-for="priority in priorities"
+              :key="priority.id"
+              :value="priority"
+              as="template"
+            >
+              <li :class="[active ? edit.elementactive : '', edit.element]">
+                <span :class="edit.listtext">{{ priority.value }}</span>
+                <span :class="edit.listicon">
+                  <svg
+                    v-show="selected"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m4.5 12.75 6 6 9-13.5"
+                    />
+                  </svg>
+                </span>
+              </li>
+            </ListboxOption>
+          </ListboxOptions>
+        </transition>
       </Listbox>
     </div>
 
-    <button class="button" @click.prevent="cancelTodo">cancel</button>
+    <button :class="edit.button" @click.prevent="cancelTodo">cancel</button>
     <button
-      class="button"
+      :class="edit.button"
       @click.prevent="addTodo"
       :disabled="!descriptionText && !titleText"
     >
@@ -113,50 +146,77 @@ const cancelTodo = () => {
     </button>
   </div>
 </template>
-<style scoped>
+<style module="edit">
 .edit {
   display: flex;
   flex-direction: row;
   gap: 5px;
-  /* display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 0px;
-  grid-column: auto;
-  align-items: center; */
 }
 .menu {
   display: flex;
   flex-direction: column;
   overflow: auto;
   position: absolute;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  margin-top: 0.25rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-size: 1rem;
   line-height: 1.5rem;
-  background-color: #ffffff;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  overflow: auto;
-  max-height: 60rem;
+  width: 9rem;
+  /* width: 100%; */
+  max-height: 80rem;
   background-color: white;
   list-style: none;
-  padding: 0.5rem 1rem;
+  margin: 0.5rem 0;
+  padding: 0;
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.295),
     0 4px 6px -4px rgba(0, 0, 0, 0.295);
-  /* width: 100%; */
+}
+.elementactive {
+  background-color: rgb(184, 184, 184);
+}
+.element {
+  box-sizing: border-box;
+  position: relative;
+  user-select: none;
+  width: 100%;
+  overflow: hidden;
+  padding: 0.35rem 2.5rem;
+  gap: 10rem;
+  /* > span {
+    > svg {
+      position: absolute;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  } */
+}
+.listtext {
+  /* display: block; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.listicon {
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  display: flex;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  align-items: center;
   position: absolute;
+  > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
 .button {
   display: flex;
   flex-wrap: wrap;
+  min-width: 5rem;
+  align-items: center;
   background-color: rgb(206, 206, 206);
-  justify-content: space-between;
+  justify-content: center;
   justify-self: end;
   border-radius: 6px;
   box-sizing: border-box;
