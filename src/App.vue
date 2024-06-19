@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import TodoEdit from '@/components/TodoEdit/TodoEdit.vue'
 import TodoItems from '@/components/TodoItems/TodoItems.vue'
 import type { TodoObj } from '@/components/TodoEdit/TodoEditTypes'
 import { editInArr } from '@/utils/editInArr'
 import type { Priority } from '@/utils/UtilTypes'
-const day = ref<number>(0)
-const start = ref<boolean>(false)
-const setStart = () => {
-  start.value = !start.value
-}
 // const lang = ref<Locales>('en')
 // const setLang = () => {
 //   lang.value = lang.value === 'en' ? 'ru' : 'en'
@@ -27,8 +22,12 @@ const PRIOR_KEY = 'priorities'
 const todos = ref<TodoObj[]>(
   JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') as TodoObj[]
 )
+// mock data
 const priorities = ref<Priority[]>(
-  JSON.parse(localStorage.getItem(PRIOR_KEY) || '[]') as Priority[]
+  JSON.parse(
+    localStorage.getItem(PRIOR_KEY) ||
+      '[{"id":1,"value":"high"},{"id":2,"value":"medium"},{"id":3,"value":"low"},{"id":4,"value":"none"}]'
+  ) as Priority[]
 )
 const editTodo = ref<boolean>(false)
 // // derived state
@@ -36,6 +35,18 @@ const todoAdd = (value: TodoObj) => {
   todos.value.push(value)
   editTodo.value = !editTodo.value
 }
+
+onMounted(() => {
+  localStorage.setItem(
+    PRIOR_KEY,
+    JSON.stringify([
+      { id: 1, value: 'high' },
+      { id: 2, value: 'medium' },
+      { id: 3, value: 'low' },
+      { id: 4, value: 'none' }
+    ])
+  )
+})
 
 // this is old declaration now i can use this functionality
 // with watch and ref

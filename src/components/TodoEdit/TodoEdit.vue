@@ -34,7 +34,6 @@ const emit = defineEmits<{
 
 const date = ref<Date>(new Date())
 const deadline = ref<Date | null>(null)
-// const deadlineDesc = ref<string>('')
 const titleText = ref<string>('')
 const descriptionText = ref<string>('')
 const priority = ref<Priority>({ id: 4, value: 'none' })
