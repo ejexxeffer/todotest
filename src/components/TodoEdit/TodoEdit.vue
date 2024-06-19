@@ -69,6 +69,7 @@ const reset = () => {
 }
 onMounted(() => {
   reset()
+  deadline.value = date.value
 })
 watch(
   () => props.todoValue,
@@ -76,6 +77,9 @@ watch(
     reset()
   }
 )
+watch(date, (newDate) => {
+  deadline.value = newDate
+})
 
 const addTodo = () => {
   emit('new-todo', {
@@ -86,6 +90,7 @@ const addTodo = () => {
     deadline: deadline.value,
     priority: priority.value
   })
+  console.log(deadline.value)
   reset()
 }
 const cancelTodo = () => {
