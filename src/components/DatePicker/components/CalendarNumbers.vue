@@ -61,11 +61,9 @@ defineEmits<{
     >
       <div
         v-for="value in array"
-        class="box-border flex min-h-7 min-w-7 justify-center active:border-2 active:border-solid active:border-blue-400"
+        class="flex value_in_array"
         :class="[
-          value.id === dateChosen.id
-            ? `border-2 border-solid border-blue-400`
-            : '',
+          value.id === dateChosen.id ? `choosen` : '',
           value.id <= emptySlots[0] ? 'text-slate-400' : '',
           emptySlots[0] + daysAct + emptySlots[1] - value.id < emptySlots[1]
             ? 'text-slate-400'
@@ -86,3 +84,33 @@ defineEmits<{
     </div>
   </div>
 </template>
+<style>
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.value_in_array {
+  box-sizing: border-box;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+.value_in_array:active {
+  border: 0.2rem solid rgb(96 165 250);
+}
+.choosen {
+  border: 0.2rem solid rgb(96 165 250);
+}
+.text-slate-400 {
+  color: rgb(148 163 184);
+}
+</style>

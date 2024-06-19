@@ -120,8 +120,8 @@ const savedDateDicrement = () => {
 <template>
   <div class="flex justify-between" data-test="head">
     <button
-      @click="savedDateDicrement()"
-      :class="[props.controlsIsShow ? 'text-cyan-600' : '']"
+      @click.prevent="savedDateDicrement()"
+      :class="[props.controlsIsShow ? 'text-cyan-600' : '', 'button_date']"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -144,8 +144,8 @@ const savedDateDicrement = () => {
       <p>{{ savedDate.getFullYear() }}</p>
     </div>
     <button
-      @click="savedDateIncrement()"
-      :class="[props.controlsIsShow ? 'text-cyan-600' : '']"
+      @click.prevent="savedDateIncrement()"
+      :class="[props.controlsIsShow ? 'text-cyan-600' : '', 'button_date']"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -162,3 +162,35 @@ const savedDateDicrement = () => {
     </button>
   </div>
 </template>
+<style>
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.text-cyan-600 {
+  color: rgb(8 145 178);
+}
+.gap-x-2 {
+  column-gap: 0.5rem;
+}
+.h-6 {
+  height: 1.5rem;
+}
+.w-6 {
+  width: 1.5rem;
+}
+.button_date {
+  display: flex;
+  flex-wrap: wrap;
+  width: 5em;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  border-style: none;
+  background-color: transparent;
+}
+</style>

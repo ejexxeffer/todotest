@@ -44,3 +44,14 @@ watch(
     <p v-for="(value, i) in weekNames" :key="i">{{ value }}</p>
   </div>
 </template>
+<style>
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.text-cyan-600 {
+  color: rgb(8 145 178);
+}
+</style>

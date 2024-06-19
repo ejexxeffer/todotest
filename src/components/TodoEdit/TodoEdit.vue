@@ -2,11 +2,15 @@
 import { onMounted, ref, watch } from 'vue'
 import type { Priority, TodoObj } from './TodoEditTypes'
 import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
   Listbox,
   ListboxButton,
   ListboxOptions,
   ListboxOption
 } from '@headlessui/vue'
+import DatePicker from '../DatePicker/DatePicker.vue'
 const props = withDefaults(
   defineProps<{
     priorities: Priority[]
@@ -21,6 +25,7 @@ const props = withDefaults(
     lang: 'en'
   }
 )
+const date = new Date()
 const emit = defineEmits<{
   (e: 'new-todo', value: TodoObj): void
   (e: 'cancel'): void
@@ -81,23 +86,63 @@ const cancelTodo = () => {
 
 <template>
   <div :class="edit.edit">
-    <input
-      :class="edit.input"
-      :placeholder="placeholder + ' title'"
-      v-model="titleText"
-      @keydown.enter="addTodo"
-    />
-    <input
-      autofocus
-      :class="edit.input"
-      :placeholder="placeholder + ' description'"
-      v-model="descriptionText"
-      @keydown.enter="addTodo"
-    />
     <div>
+      <input
+        :class="edit.input"
+        :placeholder="placeholder + ' title'"
+        v-model="titleText"
+        @keydown.enter="addTodo"
+      />
+      <input
+        autofocus
+        :class="edit.input"
+        :placeholder="placeholder + ' description'"
+        v-model="descriptionText"
+        @keydown.enter="addTodo"
+      />
+    </div>
+    <div>
+      <Popover :class="edit.popover">
+        <PopoverButton :class="[edit.popover_button]">
+          <span>Solutions</span>
+          <span :class="edit.list_button_icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+              />
+            </svg>
+          </span>
+        </PopoverButton>
+
+        <transition
+          :enter-active-class="edit.transition"
+          :enter-from-class="edit.opacity_0"
+          :enter-to-class="edit.opacity_100"
+          :leave-active-class="edit.transition"
+          :leave-from-class="edit.opacity_100"
+          :leave-to-class="edit.opacity_0"
+        >
+          <PopoverPanel :class="edit.popover_panel">
+            <div :class="edit.popover_panel_inside">
+              <div :class="edit.datepicker">
+                <DatePicker :date="date" />
+              </div>
+            </div>
+          </PopoverPanel>
+        </transition>
+      </Popover>
       <Listbox v-if="priorities[0].value" v-model="priority" by="id">
         <div :class="edit.listbox_wrapper">
-          <ListboxButton :class="[edit.list_button, edit.grey]">
+          <ListboxButton :class="[edit.list_button]">
             <span :class="edit.listtext">
               {{
                 todoValue && !priority ? todoValue?.priority : priority.value
@@ -121,9 +166,12 @@ const cancelTodo = () => {
             </span>
           </ListboxButton>
           <transition
-            leave-active-class="transition duration-100 ease-in"
-            leave-from-class="opacity-100"
-            leave-to-class="opacity-0"
+            :enter-active-class="edit.transition"
+            :enter-from-class="edit.opacity_0"
+            :enter-to-class="edit.opacity_100"
+            :leave-active-class="edit.transition"
+            :leave-from-class="edit.opacity_100"
+            :leave-to-class="edit.opacity_0"
           >
             <ListboxOptions :class="edit.menu">
               <ListboxOption
@@ -158,23 +206,31 @@ const cancelTodo = () => {
           </transition>
         </div>
       </Listbox>
-    </div>
 
-    <button :class="edit.button" @click.prevent="cancelTodo">cancel</button>
-    <button
-      :class="[edit.button, edit.danger]"
-      @click.prevent="addTodo"
-      :disabled="!descriptionText && !titleText"
-    >
-      save
-    </button>
+      <button :class="edit.button" @click.prevent="cancelTodo">cancel</button>
+      <button
+        :class="[edit.button, edit.danger]"
+        @click.prevent="addTodo"
+        :disabled="!descriptionText && !titleText"
+      >
+        save
+      </button>
+    </div>
   </div>
 </template>
 <style module="edit">
 .edit {
   display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.edit > div {
+  display: flex;
   flex-direction: row;
   gap: 5px;
+}
+.edit > div:nth-last-child(1) {
+  justify-content: space-between;
 }
 .menu {
   display: flex;
@@ -227,6 +283,10 @@ const cancelTodo = () => {
   border-style: none;
   /* gap: 0.9rem; */
   align-items: center;
+}
+.list_button:hover {
+  background-color: gray;
+  color: wheat;
 }
 .list_button_icon {
   top: 0px;
@@ -313,11 +373,70 @@ const cancelTodo = () => {
 }
 .button:hover {
   background-color: gray;
+  color: wheat;
 }
 .danger {
   background-color: rgb(238, 106, 106);
 }
 .grey {
   background-color: rgb(206, 206, 206);
+}
+.opacity_100 {
+  opacity: 1;
+}
+.opacity_0 {
+  opacity: 0;
+}
+.transition {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.popover_button {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 6.2rem;
+  align-items: center;
+  justify-self: end;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  border-style: none;
+  gap: 0.9rem;
+  align-items: center;
+}
+.popover_button:hover {
+  color: wheat;
+  background-color: gray;
+}
+.popover_button:focus {
+  outline: none;
+}
+.popover_button:focus-visible {
+  box-shadow: 0px 0px 0px 4px #90bafb;
+}
+.popover {
+  position: relative;
+}
+.popover_panel {
+  position: absolute;
+  left: 50%;
+  z-index: 10;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: 0.75rem;
+  width: 100vw;
+  max-width: 24rem;
+}
+.popover_panel_inside {
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.datepicker {
+  padding: 0.8rem;
+  background-color: white;
 }
 </style>

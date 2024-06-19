@@ -44,7 +44,13 @@ watch(
 <template>
   <div :class="element.main">
     <div v-show="!editTodo" :class="element.item">
-      <div :class="[element.priority, priorityColor]"></div>
+      <div
+        :class="[
+          element.priority,
+          priorityColor,
+          $props.todoValue.completed ? element.grayscale : ''
+        ]"
+      ></div>
       <div :class="element.element">
         <div :class="element.checkbox_wrapper">
           <div :class="element.round">
@@ -59,38 +65,12 @@ watch(
             ></label>
           </div>
         </div>
-        <!-- <div :class="element.input_wrap">
-          <label for="" :class="element.input_label_wrap">
-            <input
-              :class="element.input"
-              type="checkbox"
-              v-model="completed"
-              @click="emit('complete-todo', props.todoValue)"
-            />
-            <span
-              class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100"
-              :class="element.input_inside"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                :class="element.input_svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                stroke="currentColor"
-                stroke-width="1"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </span>
-          </label>
-        </div> -->
-
-        <p style="font-size: large; font-weight: bold">{{ todoValue.title }}</p>
-        <p>{{ todoValue.description }}</p>
+        <h2 :class="[$props.todoValue.completed ? element.completed : '']">
+          {{ todoValue.title }}
+        </h2>
+        <p :class="[$props.todoValue.completed ? element.completed : '']">
+          {{ todoValue.description }}
+        </p>
         <button
           :class="element.button"
           @click.prevent="
@@ -164,110 +144,6 @@ watch(
 .item {
   width: 100%;
 }
-/* .input {
-  border-style: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  height: 1.25rem;
-  width: 1.25rem;
-  position: relative;
-  border-radius: 0.375rem;
-  border-width: 1px;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  appearance: none;
-  cursor: pointer;
-  border: rgba(0, 0, 0, 0.5) solid 1px;
-}
-.input:hover {
-  border-style: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  border-color: #3863c0;
-  background-color: #1744a5;
-  border: rgba(0, 0, 0, 0.5) solid 2px;
-}
-.input:hover::before {
-  opacity: 0.1;
-}
-.input:focus {
-  border-style: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  outline: rgba(124, 255, 98, 0.815) solid 2px;
-}
-.input::before {
-  content: ' ';
-  height: 3rem;
-  width: 3rem;
-  display: block;
-  border-radius: 9999px;
-  transition-property: opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  opacity: 0;
-  top: 50%;
-  left: 50%;
-  transform: translateY(50%);
-  transform: translateX(50%);
-}
-.input:checked {
-  border-color: #111827;
-  background-color: #111827;
-}
-.input:checked::before {
-  background-color: #111827;
-}
-.input:checked::hover {
-  border-color: #3863c0;
-  background-color: #1744a5;
-}
-.input:hover:checked {
-  border-color: #3863c0;
-  background-color: #1744a5;
-}
-.input:active {
-  border-style: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  outline: rgba(124, 255, 98, 0.815) solid 2px;
-}
-.input_inside {
-  position: absolute;
-  color: #ff0000;
-  transition-property: opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-  pointer-events: none;
-  top: 50%;
-  left: 50%;
-  transform: translateY(50%);
-  transform: translateX(50%);
-  opacity: 0;
-}
-.input_wrap {
-  display: inline-flex;
-  align-items: center;
-}
-.input_label_wrap {
-  display: flex;
-  position: relative;
-  align-items: center;
-  border-radius: 9999px;
-}
-.input_svg {
-  height: 0.875rem;
-  width: 0.875rem;
-} */
 .checkbox_wrapper .round {
   position: relative;
   margin-left: 1rem;
@@ -357,7 +233,22 @@ watch(
   height: 0.4rem;
   border-radius: 6px;
   position: inherit;
+  transition: all 1s ease-out;
   background-color: v-bind(priorityColor);
+}
+.grayscale {
+  filter: grayscale(100%);
+  transition: all 1.6s ease-out;
+}
+.priority_completed {
+  min-width: 70%;
+  height: 0.4rem;
+  border-radius: 6px;
+  position: inherit;
+  background-color: v-bind(priorityColor);
+}
+.priority_completed::backdrop {
+  backdrop-filter: grayscale(100%);
 }
 .priority_high {
   background-color: #f81c1c;
@@ -373,5 +264,8 @@ watch(
 
 .priority_none {
   background-color: #808080;
+}
+.completed {
+  text-decoration: line-through;
 }
 </style>
