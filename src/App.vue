@@ -145,7 +145,6 @@ header {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  /* min-width: 90%; */
   width: 640px;
 }
 .button {
@@ -161,10 +160,11 @@ header {
   border-style: none;
   gap: 10px;
   align-items: start;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.16),
+    0 8px 10px -6px rgba(0, 0, 0, 0.16);
   > .button_svg {
     margin-left: -4px;
-    /* margin-top: -3px; */
-    /* align-self: baseline; */
     line-height: 1;
     display: flex;
     min-width: 20px;

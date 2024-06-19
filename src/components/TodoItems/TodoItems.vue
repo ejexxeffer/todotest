@@ -69,13 +69,15 @@ header {
 }
 .items {
   width: 100%;
-  /* width: 620px; */
   display: flex;
   box-sizing: border-box;
   flex-direction: row;
   background-color: #fcfcfc;
   border-radius: 7px;
   padding: 10px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.16),
+    0 8px 10px -6px rgba(0, 0, 0, 0.16);
 }
 .logo {
   display: block;
