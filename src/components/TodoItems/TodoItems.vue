@@ -39,8 +39,8 @@ const emit = defineEmits<{
 // )
 </script>
 <template>
-  <ul class="main">
-    <li v-for="todo in todos" :key="todo.id" class="items">
+  <ul :class="items.main">
+    <li v-for="todo in todos" :key="todo.id" :class="items.items">
       <TodoElement
         :priorities="priorities"
         :todoValue="todo"
@@ -63,13 +63,15 @@ const emit = defineEmits<{
     </li>
   </ul>
 </template>
-<style scoped>
+<style module="items">
 header {
   line-height: 1.5;
 }
 .items {
   width: 100%;
+  /* width: 620px; */
   display: flex;
+  box-sizing: border-box;
   flex-direction: row;
   background-color: #fcfcfc;
   border-radius: 7px;
@@ -80,8 +82,11 @@ header {
   margin: 0 auto 2rem;
 }
 .main {
-  display: flex;
   width: 100%;
+  display: flex;
+  justify-self: center;
+  flex-direction: column;
+  justify-content: center;
   gap: 10px;
   list-style-type: none;
   margin: 0;

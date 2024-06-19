@@ -52,10 +52,10 @@ watchEffect(() => {
 </script>
 
 <template>
-  <section class="todoapp">
+  <section :class="app.todoapp">
     <h1>Todos</h1>
     <button
-      class="button"
+      :class="app.button"
       v-show="!editTodo"
       @click.prevent="
         () => {
@@ -63,7 +63,7 @@ watchEffect(() => {
         }
       "
     >
-      <div class="button_svg">
+      <div :class="app.button_svg">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -93,7 +93,7 @@ watchEffect(() => {
         "
       />
     </form>
-    <section class="main" v-show="todos.length">
+    <section :class="app.main" v-show="todos.length">
       <TodoItems
         :priorities="priorities"
         :todos="todos"
@@ -117,7 +117,7 @@ watchEffect(() => {
   </section>
 </template>
 
-<style scoped>
+<style module="app">
 header {
   line-height: 1.5;
 }
@@ -143,7 +143,10 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 90%;
+  justify-content: center;
+  box-sizing: border-box;
+  /* min-width: 90%; */
+  width: 640px;
 }
 .button {
   display: flex;

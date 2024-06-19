@@ -96,45 +96,67 @@ const cancelTodo = () => {
     />
     <div>
       <Listbox v-if="priorities[0].value" v-model="priority" by="id">
-        <ListboxButton :class="[edit.button, edit.grey]">
-          {{ todoValue && !priority ? todoValue?.priority : priority.value }}
-        </ListboxButton>
-        <transition
-          leave-active-class="transition duration-100 ease-in"
-          leave-from-class="opacity-100"
-          leave-to-class="opacity-0"
-        >
-          <ListboxOptions :class="edit.menu">
-            <ListboxOption
-              v-slot="{ active, selected }"
-              v-for="priority in priorities"
-              :key="priority.id"
-              :value="priority"
-              as="template"
-            >
-              <li :class="[active ? edit.elementactive : '', edit.element]">
-                <span :class="edit.listtext">{{ priority.value }}</span>
-                <span :class="edit.listicon">
-                  <svg
-                    v-show="selected"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m4.5 12.75 6 6 9-13.5"
-                    />
-                  </svg>
-                </span>
-              </li>
-            </ListboxOption>
-          </ListboxOptions>
-        </transition>
+        <div :class="edit.listbox_wrapper">
+          <ListboxButton :class="[edit.list_button, edit.grey]">
+            <span :class="edit.listtext">
+              {{
+                todoValue && !priority ? todoValue?.priority : priority.value
+              }}
+            </span>
+            <span :class="edit.list_button_icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                />
+              </svg>
+            </span>
+          </ListboxButton>
+          <transition
+            leave-active-class="transition duration-100 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <ListboxOptions :class="edit.menu">
+              <ListboxOption
+                v-slot="{ active, selected }"
+                v-for="priority in priorities"
+                :key="priority.id"
+                :value="priority"
+                as="template"
+              >
+                <li :class="[active ? edit.elementactive : '', edit.element]">
+                  <span :class="edit.listtext">{{ priority.value }}</span>
+                  <span :class="edit.listicon">
+                    <svg
+                      v-show="selected"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m4.5 12.75 6 6 9-13.5"
+                      />
+                    </svg>
+                  </span>
+                </li>
+              </ListboxOption>
+            </ListboxOptions>
+          </transition>
+        </div>
       </Listbox>
     </div>
 
@@ -184,10 +206,41 @@ const cancelTodo = () => {
   padding: 0.35rem 2.5rem;
   gap: 10rem;
 }
+.list_wrapper {
+  position: relative;
+}
 .listtext {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.list_button {
+  display: flex;
+  min-width: 5rem;
+  position: relative;
+  align-items: center;
+  justify-self: end;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  border-style: none;
+  /* gap: 0.9rem; */
+  align-items: center;
+}
+.list_button_icon {
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  display: flex;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  align-items: center;
+  position: absolute;
+  > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
 .listicon {
   top: 0px;
