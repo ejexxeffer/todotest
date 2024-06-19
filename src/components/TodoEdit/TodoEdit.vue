@@ -10,7 +10,9 @@ import {
   ListboxOptions,
   ListboxOption
 } from '@headlessui/vue'
-import DatePicker from '../DatePicker/DatePicker.vue'
+import DatePicker from '@/components/DatePicker/DatePicker.vue'
+import { deadlineCount } from '@/utils/deadlineCount'
+import { deadlineMatch } from '@/utils/deadlineMatch'
 const props = withDefaults(
   defineProps<{
     priorities: Priority[]
@@ -25,27 +27,33 @@ const props = withDefaults(
     lang: 'en'
   }
 )
-const date = new Date()
 const emit = defineEmits<{
   (e: 'new-todo', value: TodoObj): void
   (e: 'cancel'): void
 }>()
 
+const date = ref<Date>(new Date())
+const deadline = ref<Date | null>(null)
+// const deadlineDesc = ref<string>('')
 const titleText = ref<string>('')
 const descriptionText = ref<string>('')
 const priority = ref<Priority>({ id: 4, value: 'none' })
-onMounted(() => {
-  titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
-  descriptionText.value = props.todoValue?.description
-    ? props.todoValue?.description
-    : ''
-  priority.value = props.todoValue?.priority
-    ? props.todoValue.priority
-    : { id: 4, value: 'none' }
-})
-watch(
-  () => props.todoValue,
-  () => {
+const reset = () => {
+  if (
+    (descriptionText.value || titleText.value) &&
+    (props.todoValue?.completed === null ||
+      props.todoValue?.completed === undefined)
+  ) {
+    titleText.value = ''
+    descriptionText.value = ''
+    deadline.value = null
+    date.value = new Date()
+    priority.value = { id: 4, value: 'none' }
+  }
+  if (
+    props.todoValue?.completed !== null ||
+    props.todoValue?.completed !== undefined
+  ) {
     titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
     descriptionText.value = props.todoValue?.description
       ? props.todoValue?.description
@@ -53,34 +61,36 @@ watch(
     priority.value = props.todoValue?.priority
       ? props.todoValue.priority
       : { id: 4, value: 'none' }
+    deadline.value = props.todoValue?.deadline ? props.todoValue.deadline : null
+    date.value = props.todoValue?.deadline
+      ? props.todoValue.deadline
+      : new Date()
+  }
+}
+onMounted(() => {
+  reset()
+})
+watch(
+  () => props.todoValue,
+  () => {
+    reset()
   }
 )
 
 const addTodo = () => {
-  if (descriptionText.value || titleText.value) {
-    console.log('fired one addTodo')
-    emit('new-todo', {
-      id: props.todoValue?.id || Date.now(),
-      title: titleText.value || undefined,
-      description: descriptionText.value || undefined,
-      completed: false,
-      deadline: null,
-      priority: priority.value
-    })
-    titleText.value = ''
-    descriptionText.value = ''
-    priority.value = { id: 4, value: 'none' }
-  }
+  emit('new-todo', {
+    id: props.todoValue?.id || Date.now(),
+    title: titleText.value || undefined,
+    description: descriptionText.value || undefined,
+    completed: props.todoValue?.completed || false,
+    deadline: deadline.value,
+    priority: priority.value
+  })
+  reset()
 }
 const cancelTodo = () => {
   emit('cancel')
-  titleText.value = props.todoValue?.title ? props.todoValue?.title : ''
-  descriptionText.value = props.todoValue?.description
-    ? props.todoValue?.description
-    : ''
-  priority.value = props.todoValue?.priority
-    ? props.todoValue?.priority
-    : { id: 4, value: 'none' }
+  reset()
 }
 </script>
 
@@ -104,7 +114,7 @@ const cancelTodo = () => {
     <div>
       <Popover :class="edit.popover">
         <PopoverButton :class="[edit.popover_button]">
-          <span>Solutions</span>
+          <span>{{ deadlineMatch(deadlineCount(date)) }}</span>
           <span :class="edit.list_button_icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +144,14 @@ const cancelTodo = () => {
           <PopoverPanel :class="edit.popover_panel">
             <div :class="edit.popover_panel_inside">
               <div :class="edit.datepicker">
-                <DatePicker :date="date" />
+                <DatePicker
+                  :date="date"
+                  @date="
+                    (value) => {
+                      date = value
+                    }
+                  "
+                />
               </div>
             </div>
           </PopoverPanel>
